@@ -1,47 +1,34 @@
-#include <cstdio>
-#include <cstring>
-#include <algorithm>
-#include <vector>
-#include <queue>
-
-#define MAXV 1000
-#define INF 0x3f3f3f3f
-
-using namespace std;
-
 struct Edge{
 	int from, to, cap, flow, cost;
 	Edge(int u, int v, int c, int f, int x)
 		: from(u), to(v), cap(c), flow(f), cost(x) {}
 };
 
-int V, E;
-vector<int> G[MAXV];
+int n, m;
+vector<int> G[MAXN];
 vector<Edge> edges;
-bool done[MAXV];
-int dist[MAXV];
-int previous[MAXV];	// previous[i]表示顶点i的前一条弧在edges的索引
-int a[MAXV];	// a[i]表示当前顶点i的可改进流量
+bool done[MAXN];
+int dist[MAXN];
+int pre[MAXN];
+int f[MAXN];
 
 void addEdge(int from, int to, int cap, int cost) {
 	edges.push_back(Edge(from, to, cap, 0, cost));
 	edges.push_back(Edge(to, from, 0, 0, -cost));
-	E = edges.size();
-	G[from].push_back(E - 2);
-	G[to].push_back(E - 1);
+	int e = edges.size();
+	G[from].push_back(e - 2);
+	G[to].push_back(e - 1);
 }
 
-bool spfa(int s, int t, int& flow, int& cost) {
-	for (int i = 0; i <= V; i++) {
-		dist[i] = INF;
-	}
-	dist[s] = 0;
+bool spfa(int& flow, int& cost) {
+	memset(dist, 0x3f, sizeof(dist));
 	memset(done, 0, sizeof(done));
-	done[s] = 1;
-	previous[s] = 0;
-	a[s] = INF;
+	dist[S] = 0;
+	done[S] = 1;
+	pre[S] = 0;
+	f[S] = INF;
 	queue<int> buff;
-	buff.push(s);
+	buff.push(S);
 	while(!buff.empty()) {
 		int current = buff.front();
 		buff.pop();
@@ -50,8 +37,8 @@ bool spfa(int s, int t, int& flow, int& cost) {
 			Edge& e = edges[G[current][i]];
 			if (e.cap > e.flow && dist[e.to] > dist[current] + e.cost) {
 				dist[e.to] = dist[current] + e.cost;
-				previous[e.to] = G[current][i];
-				a[e.to] = min(a[current], e.cap - e.flow);
+				pre[e.to] = G[current][i];
+				f[e.to] = min(f[current], e.cap - e.flow);
 				if (!done[e.to]) {
 					done[e.to] = 1;
 					buff.push(e.to);
@@ -59,32 +46,19 @@ bool spfa(int s, int t, int& flow, int& cost) {
 			}
 		}
 	}
-	if (dist[t] == INF)
+	if (dist[T] == INF)
 		return false;
-	flow += a[t];
-	cost += dist[t] * a[t];
-	for (int u = t; u != s; u = edges[previous[u]].from) {
-		edges[previous[u]].flow += a[t];
-		edges[previous[u] ^ 1].flow -= a[t];
+	flow += f[T];
+	cost += dist[T] * f[T];
+	for (int u = T; u != S; u = edges[pre[u]].from) {
+		edges[pre[u]].flow += f[T];
+		edges[pre[u] ^ 1].flow -= f[T];
 	}
 	return true;
 }
 
-int minCostMaxFlow(int s, int t) {
-	int flow = 0;
-	int cost = 0;
-	while(spfa(s, t, flow, cost));
+int minCostMaxFlow() {
+	int flow = 0, cost = 0;
+	while(spfa(flow, cost));
 	return cost;
-}
-
-int main( void ) {
-	scanf("%d %d", &V, &E);
-	int e = E;
-	int u, v, c, cost;
-	for (int i = 0; i < e; i++) {
-		scanf("%d %d %d %d", &u, &v, &c, &cost);
-		addEdge(u, v, c, cost);
-	}
-	printf("%d\n", minCostMaxFlow(1, V));
-	return 0;
 }

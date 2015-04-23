@@ -37,7 +37,7 @@ bool build() {
 		q.pop();
 		for (int i = 0; i < G[x].size(); i++) {
 			Edge& e = edges[G[x][i]];
-			if (layer[e.to] == -1 && e.cap > 0) { // 只考虑残量网络中的弧
+			if (layer[e.to] == -1 && e.cap > 0) {
 				layer[e.to] = layer[x] + 1;
 				q.push(e.to);
 			}
