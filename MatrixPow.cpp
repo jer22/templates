@@ -1,13 +1,3 @@
-#include <iostream>
-#include <cstdio>
-#include <cstring>
-
-#define MAXN 30
-
-using namespace std;
-
-int n, p;
-
 struct matrix {
 	int n, m;
 	int a[MAXN][MAXN];
@@ -18,7 +8,7 @@ struct matrix {
 	}
 }origin;
 
-inline matrix operator *(const matrix &a, const matrix &b) {
+inline matrix operator * (matrix a, matrix b) {
 	if (a.m != b.n) {
 		printf("error");
 	}
@@ -35,7 +25,7 @@ inline matrix operator *(const matrix &a, const matrix &b) {
 	return c;
 }
 
-inline matrix pow(const matrix &a, int x) {
+inline matrix pow(matrix a, int x) {
 	matrix res;
 	res.init(a.n, a.m);
 	for (int i = 0; i < a.n; i++) {
@@ -43,29 +33,10 @@ inline matrix pow(const matrix &a, int x) {
 	}
 	while (x) {
 		if (x & 1) {
-			res = res * origin;
+			res = res * a;
 		}
 		x >>= 1;
-		origin = origin * origin;
+		a = a * a;
 	}
 	return res;
-}
-
-int main( void ) {
-	cin >> n;
-	origin.init(n, n);
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			scanf("%d", &origin.a[i][j]);
-		}
-	}
-	cin >> p;
-	matrix r = pow(origin, p);
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			printf("%d ", r.a[i][j]);
-		}
-		printf("\n");
-	}
-	return 0;
 }
