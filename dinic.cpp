@@ -14,7 +14,6 @@ struct Edge{
 	Edge(int a, long long b) : to(a), cap(b) {}
 };
 
-int n, m;
 vector<Edge> edges;
 vector<int> G[MAXN];
 int layer[MAXN];
