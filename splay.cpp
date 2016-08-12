@@ -9,7 +9,7 @@ const int MAXN = 300005;
 
 int n, sz, root;
 int arr[MAXN], size[MAXN], tr[MAXN][2], fa[MAXN];
-int rev[MAXN];
+int rev[MAXN];zzzzzz
 
 void pushup(int rt) {
     int l = tr[rt][0], r = tr[rt][1];

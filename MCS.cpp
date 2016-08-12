@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 
-#define MAXV 2000
+#define MAXV 10000 + 10
 
 using namespace std;
 
@@ -16,9 +16,11 @@ int V, E;
 int peo[MAXV];
 int label[MAXV];
 int Q[MAXV];
+int color[MAXV];
+int hash[MAXV];
 vector<Edge> e[MAXV];
 
-void MCS() {
+int MCS() {
 	label[0] = -1;
 	for (int i = V; i > 0; i--) {
 		int max = 0;
@@ -35,6 +37,24 @@ void MCS() {
 			}
 		}
 	}
+	int ans = 0;
+	int current;
+	for (int i = V; i > 0; i--) {
+        current = Q[i];
+        int j;
+        for (j = 0; j < (int)e[current].size(); j++) {
+            hash[color[e[current][j].to]] = i;
+        }
+        for (j = 1; ; j++) {
+            if (hash[j] != i) {
+                break;
+            }
+        }
+        color[current] = j;
+        if (j > ans)
+            ans = j;
+    }
+    return ans;
 }
 
 int main( void ) {
@@ -48,6 +68,7 @@ int main( void ) {
 		temp.to = y;
 		e[x].push_back(temp);
 	}
-	MCS();
+	int ans = MCS();
+	cout << ans << endl;
 	return 0;
 }
