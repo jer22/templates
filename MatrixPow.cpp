@@ -16,8 +16,9 @@ inline matrix operator * (matrix a, matrix b) {
 	c.init(a.n, b.m);
 	int i, j, k;
 	for (i = 0; i < a.n; i++) {
-		for (j = 0; j < b.m; j++) {
-			for (k = 0; k < a.m; k++) {
+		for (k = 0; k < a.m; k++) {
+			if (!a.a[i][k]) continue;
+			for (j = 0; j < b.m; j++) {
 				c.a[i][j] += a.a[i][k] * b.a[k][j];
 			}
 		}
