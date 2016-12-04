@@ -5,6 +5,7 @@ const long long P = 4179340454199820289LL; // 29 * (2 ^ 57), 4e18, g = 3
 //const long long P = 1945555039024054273LL; // 27 * (2 ^ 56), 1e18, g = 5
 // const long long P = 1004535809; // 479 * 2 ^ 21 + 1, g = 3
 //const long long P = 998244353; // 119 * 2 ^ 23 + 1, g = 3
+//const long long P = 104857601; //g = 3
 
 int T, n;
 long long mul(long long x, long long y) {
