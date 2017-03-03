@@ -16,7 +16,7 @@ void extend(int c) {
 	int np = last = ++cnt;
 	maxlen[np] = maxlen[p] + 1;
 	while (!tr[p][c] && p) tr[p][c] = np, p = slink[p];
-	if (!p) slink[np] = 0, minlen[np] = 1;
+	if (!p) slink[np] = 1, minlen[np] = 1;
 	else {
 		int q = tr[p][c];
 		if (maxlen[p] + 1 == maxlen[q]) slink[np] = q, minlen[np] = maxlen[q] + 1;
@@ -44,7 +44,7 @@ int main() {
 	freopen("a.in", "r", stdin);
 	scanf("%s", a);
 	scanf("%s", b);
-	cnt = last = 0;
+	cnt = last = 1;
 	build(a);
 
 	return 0;
