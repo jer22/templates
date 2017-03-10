@@ -1,5 +1,5 @@
 char ss[MAXN << 1];
-int p[MAXN];
+int p[MAXN << 1];
 int manacher(char s[MAXN], int n) {
 	int re = 0;
 	ss[0] = '$', ss[1] = '#';
