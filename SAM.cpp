@@ -32,9 +32,9 @@ void extend(int c) {
 int tp[MAXN << 1], c[MAXN];
 void top() {
 	// from 1 to cnt
-	for (int i = 1; i <= cnt; i++) c[mx[i]]++;
+	for (int i = 1; i <= cnt; i++) c[maxlen[i]]++;
 	for (int i = 1; i <= n; i++) c[i] += c[i - 1];
-	for (int i = cnt; i; i--) tp[c[mx[i]]--] = i;
+	for (int i = cnt; i; i--) tp[c[maxlen[i]]--] = i;
 }
 
 void build(char *str) {
