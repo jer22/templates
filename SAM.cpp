@@ -7,7 +7,6 @@ using namespace std;
 
 const int MAXN = 250005;
 
-	// int p, q, np, nq;
 int cnt, last;
 int tr[MAXN << 1][26], maxlen[MAXN << 1], slink[MAXN << 1];
 
