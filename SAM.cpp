@@ -39,17 +39,16 @@ void top() {
 }
 
 void build(char *str) {
+	cnt = last = 1;
 	int ll = strlen(str);
 	for (int i = 0; i < ll; i++)
 		extend(str[i] - 'a');
 }
 
-char a[MAXN], b[MAXN];
+char a[MAXN];
 int main() {
 	freopen("a.in", "r", stdin);
 	scanf("%s", a);
-	scanf("%s", b);
-	cnt = last = 1;
 	build(a);
 
 	return 0;
