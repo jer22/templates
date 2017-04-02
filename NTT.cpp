@@ -28,33 +28,33 @@ void getwn(){
 	}
 }
 int len;
-void NTT(long long y[], int op){
-	for (int i = 1, j = len >> 1, k; i < len - 1; i++){
-		if (i < j) swap(y[i], y[j]);
-		k = len >> 1;
-		while (j >= k){
-			j -= k;
-			k >>= 1;
-		}
-		if (j < k) j += k;
-	}
-	int id = 0;
-	for (int h = 2; h <= len; h <<= 1) {
-		id++;
-		for (int i = 0; i < len; i += h) {
-			long long w = 1;
-			for (int j = i; j < i + (h >> 1); ++j){
-				long long u = y[j], t = mul(y[j + h / 2], w);
-				y[j] = u + t;
-				if (y[j] >= P) y[j] -= P;
-				y[j + h / 2] = u - t + P;
-				if (y[j + h / 2] >= P) y[j + h / 2] -= P;
-				w = mul(w, wn[id]);
-			}
-		}
-	}
-	if (op == -1) {
-		for (int i = 1; i < len / 2; i++) swap(y[i], y[len - i]);
+int rev[MAXN];
+long long w[MAXN];
+void set(){
+    for(int i = 0; i < len; i++){
+        int cur=0;
+        for(int j=1,x=i;j<len;j<<=1,x>>=1)cur=(cur<<1)+(x&1);
+        rev[i]=cur;
+    }
+    w[0]=1;w[1]=qpow(G,(P-1)/len, P);
+    for(int i = 2; i <= len; i++)w[i]=mul(w[i-1], w[1])%P;
+}
+long long v[MAXN];
+void NTT(long long *y,int sig){
+    for(int i=0; i < len; i++)v[rev[i]]=y[i];
+    for(int i=2,tot=len,hal,cur;i<=len;i<<=1){
+        tot>>=1,cur=sig?len:0,hal=i>>1;
+        for(int j=0;j<hal;j++){
+            for(int k=j,wi=w[cur];k<len;k+=i){
+                long long u=v[k],r=mul(v[k+hal],wi)%P;
+                v[k]=(u+r)%P;
+                v[k+hal]=(u+P-r)%P;
+            }
+            sig?cur-=tot:cur+=tot;
+        }
+    }
+    for(int i=0;i < len; i++)y[i]=v[i];
+    if (sig == 1) {
 		long long inv = qpow(len, P - 2, P);
 		for (int i = 0; i < len; i++) y[i] = mul(y[i], inv);
 	}
@@ -64,9 +64,9 @@ void Convolution(long long A[], long long B[], int n){
 	for(int i = n; i < len; i++)
 		A[i] = B[i] = 0;
 	
-	NTT(A, 1); NTT(B, 1);
+	NTT(A, 0); NTT(B, 0);
 	for(int i = 0; i < len; i++){
 		A[i] = mul(A[i], B[i]);
 	}
-	NTT(A, -1);
+	NTT(A, 1);
 }
