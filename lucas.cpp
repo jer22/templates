@@ -35,8 +35,8 @@ int main() {
 	scanf("%d", &T);
 	while (T--) {
 		scanf("%lld %lld %lld", &n, &l, &r);
-		unsigned long long m = l - r + 1;
-		printf("%lld\n", C(n + m, m) + MOD - 1) % MOD;
+		unsigned long long m = r - l + 1;
+		printf("%lld\n", (C(n + m, m) + MOD - 1) % MOD);
 	}
 	return 0;
 }
