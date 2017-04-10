@@ -1,64 +1,64 @@
-struct Edge{
-	int from, to, cap, flow, cost;
-	Edge(int u, int v, int c, int f, int x)
-		: from(u), to(v), cap(c), flow(f), cost(x) {}
+struct Edge {
+    int to, cost, cap, originalcost, originalcap;
+    Edge *nex, *inv;
+    Edge() {}
+    Edge(int _to, int _cap, int _cost, Edge* N) {
+    	to = _to, cap = _cap, cost = _cost, originalcost = _cost, originalcap = _cap, nex = N;
+    }
 };
 
 int n, m;
-vector<int> G[MAXN];
-vector<Edge> edges;
-bool done[MAXN];
-int dist[MAXN];
-int pre[MAXN];
-int f[MAXN];
+Edge *G[MAXV];
+Edge edges[MAXE + MAXE];
+char vis[MAXV];
+int d[MAXV];
 
-void addEdge(int from, int to, int cap, int cost) {
-	edges.push_back(Edge(from, to, cap, 0, cost));
-	edges.push_back(Edge(to, from, 0, 0, -cost));
-	int e = edges.size();
-	G[from].push_back(e - 2);
-	G[to].push_back(e - 1);
+void addEdge(int from, int to, int capacity, int cost) {
+	edges[++last] = Edge(to, capacity, cost, G[from]);
+	G[from] = edges + last;
+	edges[++last] = Edge(from, 0, -cost, G[to]);
+	G[to] = edges + last;
+	G[from] -> inv = G[to];
+	G[to] -> inv = G[from];
 }
-
-bool spfa(int& flow, int& cost) {
-	memset(dist, 0x3f, sizeof(dist));
-	memset(done, 0, sizeof(done));
-	dist[S] = 0;
-	done[S] = 1;
-	pre[S] = 0;
-	f[S] = INF;
-	queue<int> buff;
-	buff.push(S);
-	while(!buff.empty()) {
-		int current = buff.front();
-		buff.pop();
-		done[current] = 0;
-		for (int i = 0; i < G[current].size(); i++) {
-			Edge& e = edges[G[current][i]];
-			if (e.cap > e.flow && dist[e.to] > dist[current] + e.cost) {
-				dist[e.to] = dist[current] + e.cost;
-				pre[e.to] = G[current][i];
-				f[e.to] = min(f[current], e.cap - e.flow);
-				if (!done[e.to]) {
-					done[e.to] = 1;
-					buff.push(e.to);
-				}
-			}
-		}
-	}
-	if (dist[T] == INF)
-		return false;
-	flow += f[T];
-	cost += dist[T] * f[T];
-	for (int u = T; u != S; u = edges[pre[u]].from) {
-		edges[pre[u]].flow += f[T];
-		edges[pre[u] ^ 1].flow -= f[T];
-	}
-	return true;
+int aug(int cur, int nowfl, int &ncost, int &cost) {
+	if(cur==T)return cost+=ncost*nowfl,nowfl;
+    vis[cur]=1;
+    int l=nowfl;
+    for(register Edge *e=G[cur];e;e=e->nex) {
+    	if (!e->cost && !vis[e->to]) {
+	        int &delta = e->cap;
+	        if(delta)
+	        {
+	            int d=aug(e->to,l<delta?l:delta, ncost, cost);
+	            delta-=d,e->inv->cap+=d,l-=d;
+	            if(!l)return nowfl;
+	        }
+    		
+    	}
+    }
+    return nowfl-l;
 }
-
-int minCostMaxFlow() {
+char modlabel(int &ncost) {
+	int dd=INF;
+    for(register int i=0;i<=T;++i)if(vis[i])
+        for(Edge *j=G[i];j;j=j->nex)
+            if(!vis[j->to] && j->cap && j->cost<dd)dd=j->cost;
+    if(dd==INF)return 0;
+    for(register int i=0;i<=T;++i)if(vis[i])
+        for(Edge *j=G[i];j;j=j->nex)
+            j->cost-=dd,j->inv->cost+=dd;
+    ncost += dd;
+    return 1;
+}
+std::pair<int, int> minCostMaxFlow() {
 	int flow = 0, cost = 0;
-	while(spfa(flow, cost));
-	return cost;
+	int ncost = 0;
+	do do memset(vis,0,sizeof(vis));
+    while(aug(S,INF, ncost, cost));
+    while(modlabel(ncost));
+	for( register Edge *e = G[S]; e; e = e->nex)
+		flow += e -> inv-> cap;
+	// cout << cost << endl;
+	return make_pair(flow, cost);
 }
