@@ -1,10 +1,19 @@
-long long mob[MAXN];
+long long mob[MAXN], p[1000000], check[MAXN], tot;
 void getMob() {
-	for (int i = 1; i <= 100000; i++) {
-		int target = (i == 1 ? 1 : 0);
-		int delta = target - mob[i];
-		mob[i] = delta;
-		for (int j = i + i; j <= 100000; j += i)
-			mob[j] += delta;
+	mob[1] = 1;
+	for (int i = 2; i <= n; i++) {
+		if (!check[i]) {
+			p[++tot] = i;
+			mob[i] = -1;
+		}
+		for (int j = 1; j <= tot; j++) {
+			if (i * p[j] > n) break;
+			check[i * p[j]] = 1;
+			if (i % p[j] == 0) {
+				mob[i * p[j]] = 0;
+				break;
+			}
+			else mob[i * p[j]] = -mob[i];
+		}
 	}
 }
