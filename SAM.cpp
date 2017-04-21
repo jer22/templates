@@ -1,19 +1,13 @@
-#include <cstdio>
-#include <cstring>
-#include <algorithm>
-#include <iostream>
-
-using namespace std;
-
-const int MAXN = 250005;
-
+int n;
 int cnt, last;
 int tr[MAXN << 1][26], maxlen[MAXN << 1], slink[MAXN << 1];
+int siz[MAXN << 1];
 
 void extend(int c) {
 	int p = last;
 	int np = last = ++cnt;
 	maxlen[np] = maxlen[p] + 1;
+	siz[np] = 1;
 	while (!tr[p][c] && p) tr[p][c] = np, p = slink[p];
 	if (!p) slink[np] = 1;
 	else {
@@ -30,25 +24,17 @@ void extend(int c) {
 	}
 }
 int tp[MAXN << 1], c[MAXN];
-void top() {
-	// from 1 to cnt
-	for (int i = 1; i <= cnt; i++) c[maxlen[i]]++;
-	for (int i = 1; i <= n; i++) c[i] += c[i - 1];
-	for (int i = cnt; i; i--) tp[c[maxlen[i]]--] = i;
-}
 
 void build(char *str) {
 	cnt = last = 1;
-	int ll = strlen(str);
-	for (int i = 0; i < ll; i++)
+	n = strlen(str);
+	for (int i = 0; i < n; i++)
 		extend(str[i] - 'a');
-}
-
-char a[MAXN];
-int main() {
-	freopen("a.in", "r", stdin);
-	scanf("%s", a);
-	build(a);
-
-	return 0;
+	for (int i = 1; i <= cnt; i++) c[maxlen[i]]++;
+	for (int i = 1; i <= n; i++) c[i] += c[i - 1];
+	for (int i = cnt; i; i--) tp[c[maxlen[i]]--] = i;
+	for (int i = cnt; i; --i) {
+		int t = tp[i];
+		siz[slink[t]] += siz[t];
+	}
 }
