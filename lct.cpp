@@ -103,7 +103,7 @@ void link(int x, int y) {
 	makeroot(x);
 	fa[x] = y;
 }
-void cut(int x, int y) {// 以x为根，将y与其父节点断开
+void cut(int x, int y) {
 	makeroot(x);
 	access(y);
 	splay(y);
