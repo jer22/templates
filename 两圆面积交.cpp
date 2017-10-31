@@ -1,4 +1,4 @@
-double cir_area_inst(Point c1, double r1, Point c2, double r2) {            // 两圆面积交
+double cir_area_inst(Point c1, double r1, Point c2, double r2) {
     double a1, a2, d, ret;
     d = sqrt((c1.x-c2.x)*(c1.x-c2.x)+(c1.y-c2.y)*(c1.y-c2.y));
     if ( d > r1 + r2 - eps )
